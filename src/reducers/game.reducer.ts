@@ -65,7 +65,7 @@ export const gameReducer = (state: GameState = defaultValues,action: BaseAction)
         case GameGeneratorActions.GET_GAME_DETAILS_COMPLETED:
             {    
                 const payload:IGameDetails = action.payload
-                return {...state, winItems:payload.winItems, calledNumbers:payload.calledNumbers.map((n)=> Number.parseInt(n.toString(),36)), updateTime:payload.updateTime, refreshedTime:payload.refreshedTime,
+                return {...state, winItems:payload.winItems, calledNumbers:payload.calledNumbers.map((n)=> Number.parseInt(n.toString())), updateTime:payload.updateTime, refreshedTime:payload.refreshedTime,
                     loading:false, loadingGameDetails:false
                 }
             }

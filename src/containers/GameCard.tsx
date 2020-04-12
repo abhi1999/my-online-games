@@ -55,9 +55,7 @@ class GameCard extends Component<IGameProps, IGameState> {
 
   }
   private loading = (msg?:string) => <div className="animated fadeIn pt-1 text-center">{msg?msg:"Loading..."}</div>
-  private clickOnParticipant = (gameId:string, participantId:string)=>{
-    this.props.onParticipantClicked(gameId, participantId);
-  }
+ 
   public render() {
     if(!this.state.validSession){
         return  <Alert color="danger">
@@ -115,7 +113,9 @@ class GameCard extends Component<IGameProps, IGameState> {
                 }
                 const row:IBingoRow|undefined = bingoRow.find(b=>b.letter.toLocaleLowerCase()===c.toLocaleLowerCase())
                 const cellVal = row?row.numbers[indexToUse]:-1
-                return <Col key={index} className={classnames({checked:calledNumbers.indexOf(cellVal)>-1})}>{row?cellVal:""}</Col>
+                const checked = calledNumbers.find(n=> n.toString()===cellVal.toString())!== undefined
+                console.log('cell Value')
+                return <Col key={index} className={classnames({'checked':checked})}>{row?cellVal:""}</Col>
                 }
             )}
         </Row>
@@ -144,8 +144,7 @@ class GameCard extends Component<IGameProps, IGameState> {
                     <th scope="row">{rowsTags[r]}</th>
                     {cols.map(c=>{
                         const colVal = c+r*15;
-                        let called = false;
-                        if(calledNumbers.indexOf(colVal)>-1){called=true;}
+                        const called=calledNumbers.find(c=> c.toString() === colVal.toString())!== undefined
                         return <td className={classnames({'called':called})} key={colVal}>{colVal}</td>
                     })}
                 </tr>

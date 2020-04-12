@@ -17,7 +17,7 @@ class Game extends Component<IGameProps, IGameState> {
   public constructor(props:IGameProps){
     super(props);
     this.state ={
-      validSession:true, showAlert:true, shouldNavigateToGameCard:true
+      validSession:true, showAlert:true, shouldNavigateToGameCard:false
     }
     
   }

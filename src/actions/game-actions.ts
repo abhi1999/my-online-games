@@ -81,3 +81,28 @@ export const stopPolling = ():BaseAction=>({
     type:GameGeneratorActions.STOP_POLLING,
     payload:null
 })
+
+export const createGameStartAction = (name:string):BaseAction=>({
+    type:GameGeneratorActions.CREATE_GAME_START,
+    payload:{name}
+})
+export const createGameCompletedAction = (data:any):BaseAction=>({
+    type:GameGeneratorActions.CREATE_GAME_COMPLETED,
+    payload:null
+})
+export const createGameErrorAction = ():BaseAction=>({
+    type:GameGeneratorActions.CREATE_GAME_ERROR,
+    payload:null
+})
+export const updateGameStartAction = (gameId:string, game:IGame):BaseAction=>({
+    type:GameGeneratorActions.UPDATE_GAME_START,
+    payload:{gameId, game}
+})
+export const updateGameCompletedAction = (data:any):BaseAction=>({
+    type:GameGeneratorActions.UPDATE_GAME_COMPLETED,
+    payload:data
+})
+export const updateGameErrorAction = (gameId:string):BaseAction=>({
+    type:GameGeneratorActions.UPDATE_GAME_ERROR,
+    payload:gameId
+})

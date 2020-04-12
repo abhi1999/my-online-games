@@ -35,17 +35,17 @@ class GameList extends Component<IDefaultLayoutProps, IDefaultLayoutState> {
     console.log('reducer', gamesReducer)
     return (
             <div>
-                <h5 className="display-3">Aadi's Bingo Bash</h5>
+                <h5 className="display-4">Aadi's Bingo Bash</h5>
                 <p className="lead">Select a game that you would like to play.  You will need a password to enter the game</p>
                 <hr className="my-2" />
                 <Row>
-                    <Col>
+                    <Col sm="12" md="6">
                         <ListGroup>
                             {gamesReducer.loading?this.loading():""}
                             {games.map(g=> <ListGroupItem key={g.id} tag="button" onClick={()=>this.navigateToGame(g.id)}>{g.name}</ListGroupItem>)}                     
                         </ListGroup>
                     </Col>
-                    <Col>
+                    <Col sm="12" md="6">
                         <InstagramEmbed
                                         url='https://instagr.am/p/B-z9OkPBKmz/'
                                         maxWidth={320}

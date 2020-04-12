@@ -1,5 +1,5 @@
 import { take,race, delay, select, call, put, takeEvery, all, fork  } from 'redux-saga/effects';
-import { getGameList,getGameParticipants,verifyPassword,getGameDetails,claimBingo} from '../api';
+import { getGameList,getGameParticipants,verifyPassword,getGameDetails,claimBingo, createGame, updateGameById} from '../api';
 import { GameActions } from '../actions/index';
 import { BaseAction, GameGeneratorActions}  from '../common';
 import { IGameDetails, IGameParticipant, IGame, IVerifyPassowrd, IClaimAck } from '../common/interfaces';
@@ -16,6 +16,7 @@ function* watchGameListLookupRequestStart() {
 function* requestGameListLookup(reduxAction:BaseAction){
   console.log('Requesting Game List')
   const data:IGame[] = (yield call (getGameList)).data
+  data.forEach(d=> d.id = d._id?d._id:d.id)
   yield put(GameActions.getGameListCompletedAction(data)) ;
 }
 function* watchGameParticipantLookupStartStart() {
@@ -108,6 +109,35 @@ function* pollSagaWatcher() {
 }
 
 
+function* watchCreateGameRequestStart() {
+  yield takeEvery(
+    GameGeneratorActions.CREATE_GAME_START,
+    requestCreateGame
+  );
+}
+function* requestCreateGame(reduxAction:BaseAction){
+  console.log('Creating Game Game Details')
+  const {name} = reduxAction.payload;
+  const data:IGameDetails = (yield call (createGame, name)).data
+  yield put(GameActions.getGameListStartAction())
+  yield put(GameActions.createGameCompletedAction(data))
+}
+
+function* watchUpdateGameRequestStart() {
+  yield takeEvery(
+    GameGeneratorActions.UPDATE_GAME_START,
+    requestUpdateGame
+  );
+}
+function* requestUpdateGame(reduxAction:BaseAction){
+  console.log('Creating Game Game Details')
+  const game :IGame = reduxAction.payload.game;
+  const gameId: string = reduxAction.payload.gameId
+  const data:IGameDetails = (yield call (updateGameById,gameId, game)).data
+  yield put(GameActions.getGameListStartAction())
+  yield put(GameActions.updateGameCompletedAction(data))
+}
+
 export default function* rootSaga() {
     yield all([
         fork(watchGameListLookupRequestStart),
@@ -115,6 +145,8 @@ export default function* rootSaga() {
         fork(watchGameVerifyPasswordRequestStart),
         fork(watchGameDetailsRequestStart),
         fork(watchClaimBingRequestStart),
-        pollSagaWatcher()
+        pollSagaWatcher(),
+        fork(watchCreateGameRequestStart),
+        fork(watchUpdateGameRequestStart)
     ]);
 }

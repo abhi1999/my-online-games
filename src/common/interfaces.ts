@@ -1,6 +1,7 @@
 // IGame, IError, IGameParticipant, IVerifyPassowrd, WinType, IGameWinItem,IGameDetails,IClaimAck
 export interface IGame{
     id:string,
+    _id?:string,
     name:string
 }
 export interface IError{

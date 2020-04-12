@@ -3,7 +3,7 @@ import { withRouter, RouteComponentProps } from "react-router";
 import { withCookies, ReactCookieProps } from 'react-cookie';
 import { IApplicationState } from '../reducers';
 import {Alert} from 'reactstrap'
-import {Row, Col,ListGroup, ListGroupItem} from "reactstrap"
+import {Row, Col} from "reactstrap"
 import {IGame,IGameParticipant, IBingoRow} from "./../common/interfaces";
 /** Redux  */
 import {connect} from 'react-redux';
@@ -68,9 +68,9 @@ class GameCard extends Component<IGameProps, IGameState> {
     const game=gamesReducer.games.find((g:IGame)=> g.id===gamesReducer.activeGameId);
     const gameParticipant = gamesReducer.gameParticipants.find((gp:IGameParticipant)=> gp.id === gamesReducer.activeParticipantId)
     return (
-        <div>
-            <h5 className="display-3">{game? game.name:""} - {gameParticipant? gameParticipant.name:""}</h5>
-            <p className="lead">Select the Participant</p>
+        <div className="bingo-card">
+            <h5 className="display-5">{game? game.name:""} - {gameParticipant? gameParticipant.name:""}</h5>
+            <p className="lead">Play Your Bingo</p>
                 <hr className="my-2" />
                 <Row>
                     <Col className="bingo-table">
@@ -83,6 +83,7 @@ class GameCard extends Component<IGameProps, IGameState> {
                         {this.listOfAvailablePrizes()}
                     </Col>
                 </Row>
+                <hr className="my-2" />
                 <Row>
                     <Col>
                         <span>Called Numbers</span>
@@ -94,9 +95,9 @@ class GameCard extends Component<IGameProps, IGameState> {
   }
   private listOfAvailablePrizes = ()=>{
       const {gamesReducer} = this.props.applicationState
-      return <ListGroup>
-          {gamesReducer.winItems.map((w:IGameWinItem)=><ListGroupItem key={w.name} disabled={true}>{w.name}</ListGroupItem>)}
-      </ListGroup>
+      return <ul>
+          {gamesReducer.winItems.map((w:IGameWinItem)=><li key={w.name}>{w.name}</li>)}
+      </ul>
   }
   private bingoRow =(rowNumber:number)=>{
     const colTags =["B","I","N","G","O"];
@@ -109,7 +110,7 @@ class GameCard extends Component<IGameProps, IGameState> {
                     return <Col key={index} className={classnames('fixed')}>FREE</Col>
                 }
                 let indexToUse = rowNumber;
-                if(rowNumber ===2 && index>2){
+                if(rowNumber >=2 && index===2){
                     indexToUse = rowNumber-1;
                 }
                 const row:IBingoRow|undefined = bingoRow.find(b=>b.letter.toLocaleLowerCase()===c.toLocaleLowerCase())

@@ -43,13 +43,18 @@ gameListData.forEach(game=>{
 
 */
 const serviceURLs={
+  /*getGameList:"/admin/game",
+  getGameParticipants:"/2/getGameParticipants",
+  verifyPassword:"/2/verifyPassword",
+  getGameDetails:"/2/getGameDetails",
+  */getGameParticipants:"/getGameParticipants",
   getGameList:"/getGameList",
-  getGameParticipants:"/getGameParticipants",
   verifyPassword:"/verifyPassword",
   getGameDetails:"/getGameDetails",
   claimBingo:"/claimBingo",
   callNumber:'/callNumber',
-  cancelNumberCall:'/cancelNumberCall'
+  cancelNumberCall:'/cancelNumberCall',
+  admin:'/admin/game',
 }
 
 export const getGameList = (): Promise<IGame[]> => {
@@ -79,6 +84,21 @@ export const registerCallNumber = (gameId:string, participantId:string, number:n
 export const cancelCalledNumber = (gameId:string, participantId:string, number:number):Promise<void>=>{
     return axiosRoot.get(serviceURLs.cancelNumberCall + "/"+gameId+"/"+participantId+"/"+number)
 }
+
+export const createGame= (name:string):Promise<any>=>{
+    return axiosRoot.post(serviceURLs.admin, {name})
+  }
+  /*
+  export const getJobSiteById= (id:string):Promise<any>=>{
+    return axiosRoot.get(serviceURLs.getById+id)
+  }
+  */
+  export const updateGameById= (gameId:string, game:IGame):Promise<any>=>{
+    return axiosRoot.put(serviceURLs.admin+"/"+gameId, game)
+  }
+  export const deleteGameById= (gameId:string):Promise<any>=>{
+    return axiosRoot.delete(serviceURLs.admin+"/"+gameId)
+  }
 /*
 
 

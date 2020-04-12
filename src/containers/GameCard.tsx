@@ -105,9 +105,15 @@ class GameCard extends Component<IGameProps, IGameState> {
     const bingoRow = gamesReducer.bingoCardNumbers;
     return <Row key={rowNumber}>
             {colTags.map((c, index)=>{
+                if(rowNumber ===2 && index ===2){
+                    return <Col key={index} className={classnames('fixed')}>FREE</Col>
+                }
+                let indexToUse = rowNumber;
+                if(rowNumber ===2 && index>2){
+                    indexToUse = rowNumber-1;
+                }
                 const row:IBingoRow|undefined = bingoRow.find(b=>b.letter.toLocaleLowerCase()===c.toLocaleLowerCase())
-                const cellVal = row?row.numbers[rowNumber]:-1
-               
+                const cellVal = row?row.numbers[indexToUse]:-1
                 return <Col key={index} className={classnames({checked:calledNumbers.indexOf(cellVal)>-1})}>{row?cellVal:""}</Col>
                 }
             )}

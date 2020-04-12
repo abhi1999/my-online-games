@@ -1,31 +1,20 @@
-import React, { Component, Suspense } from 'react';
-import { Container } from 'reactstrap';
+import React, { Component } from 'react';
 import { withRouter, RouteComponentProps } from "react-router";
 import { withCookies, ReactCookieProps } from 'react-cookie';
-import {checkForValidSession} from './../../utils/authentications';
 import InstagramEmbed from 'react-instagram-embed';
-import {Row, Col,ListGroup, Jumbotron, ListGroupItem} from "reactstrap"
-
-import {
-  AppFooter,
-  AppHeader,
-  // @ts-ignore
-} from '@coreui/react';
+import {Row, Col,ListGroup, ListGroupItem} from "reactstrap"
+import { IApplicationState } from '../../reducers';
 // sidebar nav config
 
-// const Game = React.lazy(() => import('./Game'));
-// const GameList = React.lazy(() => import('./GameList'));
-
-const DefaultFooter = React.lazy(() => import('./DefaultFooter'));
-const DefaultHeader = React.lazy(() => import('./DefaultHeader'));
 
 interface IDefaultLayoutProps extends RouteComponentProps, ReactCookieProps{
-  LoadLookupData:()=>void
+  onGameItemClicked:(gameId:string)=>void
+  applicationState:IApplicationState
 }
 interface IDefaultLayoutState {
   validSession:boolean
 }
-class DefaultLayout extends Component<IDefaultLayoutProps, IDefaultLayoutState> {
+class GameList extends Component<IDefaultLayoutProps, IDefaultLayoutState> {
 
   public constructor(props:IDefaultLayoutProps){
     super(props);
@@ -33,44 +22,27 @@ class DefaultLayout extends Component<IDefaultLayoutProps, IDefaultLayoutState> 
       validSession:false
     }
   }
-  private checkForValidSession = ()=>{
-    const { cookies, history } = this.props;
-    if(checkForValidSession(cookies)){
-      this.setState({validSession:true});
-      this.props.LoadLookupData();
-    }else{
-      this.setState({validSession:false})
-      history.push('/Login');
-    }    
-  }
 
-  public componentDidMount=()=>{
-    this.checkForValidSession();
+  private loading = () => <div className="animated fadeIn pt-1 text-center">Loading Game list...</div>
+  private navigateToGame=(gameId:string)=> {
+      const {history, onGameItemClicked} = this.props;
+      onGameItemClicked(gameId);
+      history.push("/Bingo/Games/"+gameId)
   }
-  private loading = () => <div className="animated fadeIn pt-1 text-center">Loading...</div>
   public render() {
-    if(!this.state.validSession){return <div/>}
+    const gamesReducer = this.props.applicationState.gamesReducer
+    const games = gamesReducer.games?gamesReducer.games:[];
+    console.log('reducer', gamesReducer)
     return (
-      <div className="app">
-        <AppHeader fixed>
-          <Suspense  fallback={this.loading()}>
-            <DefaultHeader {...this.props}/>
-          </Suspense>
-        </AppHeader>
-        <div className="app-body">
-          <main className="main">
-            <Container fluid>
-            <Jumbotron>
-                <h3 className="display-3">Aadi's Bingo Bash</h3>
-                <p className="lead">Select a game that you would like to play.  You will need a user password to start the game</p>
+            <div>
+                <h5 className="display-3">Aadi's Bingo Bash</h5>
+                <p className="lead">Select a game that you would like to play.  You will need a password to enter the game</p>
                 <hr className="my-2" />
                 <Row>
                     <Col>
                         <ListGroup>
-                            <ListGroupItem disabled tag="a" href="#">Game 1</ListGroupItem>
-                            <ListGroupItem tag="a" href="#">Aadi's Birthay</ListGroupItem>
-                            <ListGroupItem tag="a" href="#">Aadi's Family Bingo1</ListGroupItem>
-                            <ListGroupItem tag="a" href="#">Aadi's Family Bingo2 </ListGroupItem>                        
+                            {gamesReducer.loading?this.loading():""}
+                            {games.map(g=> <ListGroupItem key={g.id} tag="button" onClick={()=>this.navigateToGame(g.id)}>{g.name}</ListGroupItem>)}                     
                         </ListGroup>
                     </Col>
                     <Col>
@@ -88,18 +60,9 @@ class DefaultLayout extends Component<IDefaultLayoutProps, IDefaultLayoutState> 
                                         />
                     </Col>
                 </Row>
-            </Jumbotron>
-            </Container>
-          </main>
-        </div>
-        <AppFooter>
-          <Suspense fallback={this.loading()}>
-            <DefaultFooter/>
-          </Suspense>
-        </AppFooter>
-      </div>
+            </div>    
     );
   }
 }
 
-export default withCookies(withRouter(DefaultLayout));
+export default withCookies(withRouter(GameList));

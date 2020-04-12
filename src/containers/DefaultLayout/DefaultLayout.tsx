@@ -1,5 +1,5 @@
 import React, { Component, Suspense } from 'react';
-import { Redirect, Route, Switch } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import * as router from 'react-router-dom';
 import { Container } from 'reactstrap';
 import { withRouter, RouteComponentProps } from "react-router";
@@ -69,7 +69,7 @@ class DefaultLayout extends Component<IDefaultLayoutProps, IDefaultLayoutState> 
           </Suspense>
         </AppHeader>
         <div className="app-body">
-          <AppSidebar fixed display="lg">
+          <AppSidebar fixed display="none">
             <AppSidebarHeader />
             <AppSidebarForm />
             <Suspense fallback={this.loading()}>
@@ -96,8 +96,6 @@ class DefaultLayout extends Component<IDefaultLayoutProps, IDefaultLayoutState> 
                     ) : (null);
                   })}
                 </Switch>
-                <Redirect from="/" to="/dashboard" />
-
               </Suspense>
             </Container>
           </main>

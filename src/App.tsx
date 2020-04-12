@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import { HashRouter, Route, Switch } from 'react-router-dom';
+import {  HashRouter, Route, Switch } from 'react-router-dom';
 import { withCookies, ReactCookieProps } from 'react-cookie';
 import Notifications from 'react-notification-system-redux';
 import {connect} from 'react-redux';
 import {IApplicationState} from "./reducers"
 import './App.scss';
 // Containers
-import {DefaultLayout, Game,GameList} from './containers';
+import {BingoLayout} from './containers';
 
 const loading = () => <div className="animated fadeIn pt-3 text-center">Loading...</div>;
 
@@ -32,9 +32,7 @@ class App extends Component<IAppProps,any> {
               <Route exact path="/register" render={props => <Register {...props}/>} />
               <Route exact path="/404" render={props => <Page404 {...props}/>} />
               <Route exact path="/500" render={props => <Page500 {...props}/>} />
-              <Route path="/Game/:gameId" render={props => <Game {...props}/>} />
-              <Route path="/GameList" render={props => <GameList {...props}/>} />
-              <Route path="/" render={props => <DefaultLayout {...props}/>} />
+              <Route path="/" render={props => <BingoLayout {...props}/>} />
             </Switch>
           </React.Suspense>
           {this.renderNotification()}

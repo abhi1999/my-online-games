@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import {  NavLink } from 'react-router-dom';
-import { Nav, NavItem } from 'reactstrap';
+// import {  NavLink } from 'react-router-dom';
+import { Nav,  UncontrolledDropdown, DropdownItem, DropdownMenu, DropdownToggle} from 'reactstrap';
 import { ReactCookieProps } from 'react-cookie';
 import { RouteComponentProps } from "react-router";
 import {  AppNavbarBrand, AppSidebarToggler 
@@ -44,14 +44,16 @@ class DefaultHeader extends Component<IDefaultHeaderProps,IDefaultHeaderState>  
           full={{ src: logo, width: 89, height: 40, alt: 'AFD' }}
           minimized={{ src: sygnet, width: 30, height: 30, alt: 'AFD' }}
         />
-        <AppSidebarToggler className="d-md-down-none" display="lg" />
-        <Nav className="d-md-down-none" navbar>
-          <NavItem className="px-3">
-            <NavLink to="/dashboard" className="nav-link" >Dashboard</NavLink>
-          </NavItem>
-        </Nav>
+        <Nav className="d-md-down-none" navbar/>
         <Nav className="ml-auto" navbar>
-          
+          <UncontrolledDropdown nav direction="down">
+              <DropdownToggle nav>
+                <img src={'../../assets/img/avatars/7.jpg'} className="img-avatar" alt="admin@bootstrapmaster.com" />
+              </DropdownToggle>
+              <DropdownMenu right>
+                <DropdownItem onClick={(e) => this.onLogout()}><i className="fa fa-lock"></i> Logout</DropdownItem>
+              </DropdownMenu>
+            </UncontrolledDropdown>
         </Nav>
         {/*<AppAsideToggler className="d-lg-none" mobile />*/}
       </React.Fragment>

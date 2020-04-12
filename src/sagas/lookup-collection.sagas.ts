@@ -39,6 +39,7 @@ function* requestAllJobSites() {
 
 
     console.log('Jobsites Lookup Start')
+    yield put(LookupActions.getJobSitesCompletedAction([]));
  //   const data = yield call(getJobSites);
  //   yield put(LookupActions.getJobSitesCompletedAction(data.data));
 }

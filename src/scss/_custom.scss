@@ -7,3 +7,25 @@
 .bold {
     font-weight: bold;
 }
+
+.bingo-numbers{
+    td{
+        text-align: center;
+    }
+    .called{
+        background: #77FF33;
+        font-weight: bold;
+    }
+}
+
+.bingo-table{
+    .col, .row{
+        text-align: center;
+    }
+    .header{
+        font-weight: bold;
+    }
+    .checked{
+        background: green;
+    }
+}

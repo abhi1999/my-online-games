@@ -1,3 +1,4 @@
-import DefaultLayout, {GameList, Game} from './DefaultLayout';
+import DefaultLayout, {GameList, Game, BingoLayout} from './DefaultLayout';
 
-export { DefaultLayout, Game, GameList };
+export { DefaultLayout, Game, GameList,BingoLayout };
+export default GameList;

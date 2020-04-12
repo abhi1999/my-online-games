@@ -1,119 +1,82 @@
-import React, { Component, Suspense } from 'react';
-import { Redirect, Route, Switch } from 'react-router-dom';
-import * as router from 'react-router-dom';
-import { Container } from 'reactstrap';
+import React, { Component } from 'react';
 import { withRouter, RouteComponentProps } from "react-router";
 import { withCookies, ReactCookieProps } from 'react-cookie';
-import {checkForValidSession} from './../../utils/authentications';
-
-import {
-  AppAside,
-  AppFooter,
-  AppHeader,
-  AppSidebar,
-  AppSidebarFooter,
-  AppSidebarForm,
-  AppSidebarHeader,
-  AppSidebarMinimizer,
-  AppBreadcrumb2 as AppBreadcrumb,
-  AppSidebarNav2 as AppSidebarNav,
-  // @ts-ignore
-} from '@coreui/react';
-// sidebar nav config
-import navigation from '../../_nav';
-// routes config
-import routes from '../../routes';
-
-// const Game = React.lazy(() => import('./Game'));
-// const GameList = React.lazy(() => import('./GameList'));
-
-const DefaultAside = React.lazy(() => import('./DefaultAside'));
-const DefaultFooter = React.lazy(() => import('./DefaultFooter'));
-const DefaultHeader = React.lazy(() => import('./DefaultHeader'));
-
-interface IDefaultLayoutProps extends RouteComponentProps, ReactCookieProps{
-  LoadLookupData:()=>void
+import { IApplicationState } from '../../reducers';
+import {Alert} from 'reactstrap'
+import {Row, Col,ListGroup, ListGroupItem} from "reactstrap"
+import {IGame} from "./../../common/interfaces";
+interface IGameProps extends RouteComponentProps, ReactCookieProps{
+  applicationState:IApplicationState,
+  onParticipantClicked:(gameId:string, participantId:string, password:string)=>void
 }
-interface IDefaultLayoutState {
+interface IGameState {
   validSession:boolean
 }
-class DefaultLayout extends Component<IDefaultLayoutProps, IDefaultLayoutState> {
+class Game extends Component<IGameProps, IGameState> {
 
-  public constructor(props:IDefaultLayoutProps){
+  public constructor(props:IGameProps){
     super(props);
     this.state ={
-      validSession:false
+      validSession:true
     }
+    
   }
-  private checkForValidSession = ()=>{
-    const { cookies, history } = this.props;
-    if(checkForValidSession(cookies)){
-      this.setState({validSession:true});
-      this.props.LoadLookupData();
-    }else{
-      this.setState({validSession:false})
-      history.push('/Login');
-    }    
+  public componentDidMount(){
+    this.checkValid(this.props)
   }
-  public componentDidMount=()=>{
-    this.checkForValidSession();
+  public componentWillReceiveProps(newProps:IGameProps){
+    const {gamesReducer} =newProps.applicationState ;
+    // const oldGamesReducer = this.props.applicationState.gamesReducer; 
+    if(gamesReducer.validGame){
+        this.props.history.push('/Bingo/Games/'+gamesReducer.activeGameId +"/"+ gamesReducer.activeParticipantId)
+    }
+   /* else if(gamesReducer.loadingCheckPassowrd !== oldGamesReducer.loadingCheckPassowrd && oldGamesReducer.loadingCheckPassowrd!== undefined){
+        debugger;
+        alert('invalid password')
+    }*/
   }
-  private loading = () => <div className="animated fadeIn pt-1 text-center">Loading...</div>
+  private checkValid=(props:IGameProps)=>{
+      const params:any =props.match && props.match.params ? props.match.params:{}
+      if(params.gameId !== props.applicationState.gamesReducer.activeGameId){
+        this.setState({validSession:false})
+        setTimeout(()=>{props.history.push('/')}, 3000)
+      }
+
+  }
+  private loading = (msg?:string) => <div className="animated fadeIn pt-1 text-center">{msg?msg:"Loading..."}</div>
+  private clickOnParticipant = (gameId:string, participantId:string)=>{
+    this.props.onParticipantClicked(gameId, participantId, participantId);
+  }
+  
   public render() {
-    if(!this.state.validSession){return <div/>}
+    if(!this.state.validSession){
+        return  <Alert color="danger">
+        You have reached an invalid page.  Redirecting to home page.
+      </Alert>
+    }
+    const {gamesReducer}= this.props.applicationState
+    const game=gamesReducer.games.find((g:IGame)=> g.id===gamesReducer.activeGameId)
     return (
-      <div className="app">
-        <AppHeader fixed>
-          <Suspense  fallback={this.loading()}>
-            <DefaultHeader {...this.props}/>
-          </Suspense>
-        </AppHeader>
-        <div className="app-body">
-          <AppSidebar fixed display="lg">
-            <AppSidebarHeader />
-            <AppSidebarForm />
-            <Suspense fallback={this.loading()}>
-            <AppSidebarNav navConfig={navigation} {...this.props} router={router}/>
-            </Suspense>
-            <AppSidebarFooter />
-            <AppSidebarMinimizer />
-          </AppSidebar>
-          <main className="main">
-            <AppBreadcrumb appRoutes={routes} router={router}/>
-            <Container fluid>
-              <Suspense fallback={this.loading()}>
-                <Switch>
-                  {routes.map((route, idx) => {
-                    return route.component ? (
-                      <Route
-                        key={idx}
-                        path={route.path}
-                        exact={route.exact}
-                        name={route.name}
-                        render={(props:any) => (
-                          <route.component {...props} />
-                        )} />
-                    ) : (null);
-                  })}
-                  <Redirect from="/" to="/dashboard" />
-                </Switch>
-              </Suspense>
-            </Container>
-          </main>
-          <AppAside fixed>
-            <Suspense fallback={this.loading()}>
-              <DefaultAside />
-            </Suspense>
-          </AppAside>
-        </div>
-        <AppFooter>
-          <Suspense fallback={this.loading()}>
-            <DefaultFooter/>
-          </Suspense>
-        </AppFooter>
-      </div>
+        <div>
+                <h5 className="display-3">{game?.name}</h5>
+                <p className="lead">Select the Participant</p>
+                <hr className="my-2" />
+                <Row>
+                    <Col>
+                        <ListGroup>
+                            {gamesReducer.loadingParticipant?this.loading("Loading Participant"):""}
+                            {gamesReducer.loadingCheckPassowrd?this.loading("Checking password"):""}
+                            {gamesReducer.gameParticipants.map(p=> <ListGroupItem key={p.id} tag="button" onClick={()=>this.clickOnParticipant(gamesReducer.activeGameId, p.id)}>{p.id}-{p.name}</ListGroupItem>)}                     
+                        </ListGroup>
+                    </Col>
+                    <Col>
+                       
+                    </Col>
+                </Row>
+            </div> 
+            
     );
   }
 }
 
-export default withCookies(withRouter(DefaultLayout));
+export default withCookies(withRouter(Game));

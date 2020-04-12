@@ -84,7 +84,7 @@ class Login extends Component<ILoginProps,ILoginState> {
   }
   private onLoginClicked=()=>{
     if(checkPassword(this.state.password)){
-      this.props.NotifySuccess({message: "Login successful. Redirecting to main page"});
+      // this.props.NotifySuccess({message: "Login successful. Redirecting to main page"});
       this.props.onLoginComplete();
       setTimeout(()=>{this.setCookieAndRedirectToMainPage()}, 1000)
     }else{

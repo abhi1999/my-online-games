@@ -1,5 +1,6 @@
 import { call, put, takeEvery, all, fork  } from 'redux-saga/effects';
-import { getJobSites, createJobSite, updateJobSiteById } from '../api';
+import { // getJobSites, 
+  createJobSite, updateJobSiteById } from '../api';
 import { LookupActions } from '../actions/index';
 import {JobsiteGeneratorActions, LookupGeneratorActions, BaseAction}  from '../common';
 
@@ -31,13 +32,15 @@ function* watchJobsiteUpdateRequestStart() {
 }
 function* requestAllLookup(){
     console.log('All Lookup Start')
-    yield requestAllJobSites();
+   yield requestAllJobSites();
 }
 
 function* requestAllJobSites() {
+
+
     console.log('Jobsites Lookup Start')
-    const data = yield call(getJobSites);
-    yield put(LookupActions.getJobSitesCompletedAction(data.data));
+ //   const data = yield call(getJobSites);
+ //   yield put(LookupActions.getJobSitesCompletedAction(data.data));
 }
 
 function* requestCreateJobSite(reduxAction:BaseAction) {

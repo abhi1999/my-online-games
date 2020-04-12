@@ -61,7 +61,7 @@ class DefaultLayout extends Component<IDefaultLayoutProps, IDefaultLayoutState> 
           <main className="main">
             <Container fluid>
             <Jumbotron>
-                <h1 className="display-3">Welcome to Aadi's Bingo Bash</h1>
+                <h3 className="display-3">Aadi's Bingo Bash</h3>
                 <p className="lead">Select a game that you would like to play.  You will need a user password to start the game</p>
                 <hr className="my-2" />
                 <Row>
